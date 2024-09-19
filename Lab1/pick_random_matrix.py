@@ -1,60 +1,36 @@
 import random
 
-def dividir_matriz_por_percentagem(matriz, percentagem, seed):
+def dividir_matriz_por_percentagem_linhas(matriz, percentagem, seed):
     # Define a seed para a aleatoriedade ser reprodutível
     random.seed(seed)
     
-    # Obtém o número total de elementos na matriz original
-    elementos_totais = sum(len(linha) for linha in matriz)
+    # Calcula quantas linhas terão na matriz menor
+    n_linhas_menor_matriz = int(len(matriz) * percentagem)
     
-    # Calcula quantos elementos serão colocados na matriz menor
-    n_elementos_menor_matriz = int(elementos_totais * percentagem)
+    # Seleciona aleatoriamente as linhas para a matriz menor
+    linhas_selecionadas = random.sample(range(len(matriz)), n_linhas_menor_matriz)
     
-    # Lista plana com todos os elementos da matriz original
-    todos_elementos = [valor for linha in matriz for valor in linha]
-    
-    # Seleciona aleatoriamente os elementos para a matriz menor
-    elementos_menor_matriz = random.sample(todos_elementos, n_elementos_menor_matriz)
-    
-    # Cria a matriz maior e menor
-    matriz_menor = []
-    matriz_maior = []
-    
-    for linha in matriz:
-        nova_linha_menor = []
-        nova_linha_maior = []
-        
-        for valor in linha:
-            if valor in elementos_menor_matriz:
-                nova_linha_menor.append(valor)
-                elementos_menor_matriz.remove(valor)  # Remove o elemento para evitar duplicações
-            else:
-                nova_linha_maior.append(valor)
-        
-        matriz_menor.append(nova_linha_menor)
-        matriz_maior.append(nova_linha_maior)
+    # Cria as matrizes maior e menor
+    matriz_menor = [matriz[i] for i in linhas_selecionadas]
+    matriz_maior = [matriz[i] for i in range(len(matriz)) if i not in linhas_selecionadas]
     
     return matriz_maior, matriz_menor
 
-# Exemplo de matriz original
-matriz_original = [
-    [1, 2, 3, 12],
-    [4, 5, 6, 11],
-    [7, 8, 9,10]
-]
+# Exemplo de matriz original com 200x200 elementos
+matriz_original = [[(i * 200 + j + 1) for j in range(200)] for i in range(200)]
 
 # Percentagem e seed
-percentagem = 0.2  # 20% para a matriz menor
+percentagem = 0.2  # 20% das linhas para a matriz menor
 seed = 42  # Seed fixa para garantir resultados reprodutíveis
 
 # Divide a matriz original
-matriz_maior, matriz_menor = dividir_matriz_por_percentagem(matriz_original, percentagem, seed)
+matriz_maior, matriz_menor = dividir_matriz_por_percentagem_linhas(matriz_original, percentagem, seed)
 
-# Exibe as matrizes
-print("Matriz Maior:")
-for linha in matriz_maior:
+# Exibe as matrizes (limitando o print para as primeiras linhas, devido ao tamanho)
+print("Matriz Maior (primeiras 5 linhas):")
+for linha in matriz_maior[:5]:
     print(linha)
 
-print("\nMatriz Menor:")
-for linha in matriz_menor:
+print("\nMatriz Menor (todas as linhas):")
+for linha in matriz_menor[:5]:
     print(linha)
